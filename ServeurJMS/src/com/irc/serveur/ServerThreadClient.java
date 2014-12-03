@@ -121,6 +121,12 @@ public class ServerThreadClient extends Thread {
 				case MESSAGE_QUIT:
 					server.disconnectSocket(this);
 					break;
+				case USER_KICK:
+					if(getAdmin())
+					{
+						server.kick(socketMessage.getMessageContent());
+					}
+					break;
 				default:
 					break;
 				}
@@ -130,6 +136,9 @@ public class ServerThreadClient extends Thread {
 			}
 			catch(IOException ioe) {
 				currentThread().interrupt();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

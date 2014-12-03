@@ -98,11 +98,32 @@ public class Server implements Runnable {
 		}
 
 	}
+	public void kick(String text) throws IOException, InterruptedException
+	{
+		HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
+		SocketCommunication socketCommunication = new SocketCommunication();
+		String name = socketCommunication.getNickName(text);
+		for(ServerThreadClient serverThreadClient : clients)
+		{
+			hashMap.put(serverThreadClient.getNickname(), serverThreadClient.getIndex());
+		}
+		try
+		{
+			Integer indexClient = hashMap.get(name);
+			clients.get(indexClient).sendMessage(new SocketMessage(false,name, "Quit", "", SocketMessageType.MESSAGE_QUIT));
+			sendmessageTopic(SocketMessageType.USER_KICK,name);
+		}
+		catch(Exception exception)
+		{
+			
+		}
 	
+
+	}
 
 	public synchronized  void disconnectSocket(ServerThreadClient serverThreadClient)
 	{
-		System.out.println(serverThreadClient.getNickname() + " se deconnecte");
+		//System.out.println(serverThreadClient.getNickname() + " se deconnecte");
 		Integer indexClient = clients.indexOf(serverThreadClient);
 		try {
 			clients.get(indexClient).checkAccess();
@@ -157,7 +178,7 @@ public class Server implements Runnable {
 	
 	public void sendmessageTopic(SocketMessageType type,String text)
 	{
-		SocketMessage socketMessage = new SocketMessage("***", text, "Serveur", type);
+		SocketMessage socketMessage = new SocketMessage(false,"***", text, "Serveur", type);
 		SocketCommunication socketCommunication = new SocketCommunication();
 		TextMessage message ;
 		
@@ -190,7 +211,7 @@ public class Server implements Runnable {
 	   	DataOutputStream streamOut = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 		if(!socket.isClosed())
 		{
-			SocketMessage message = new SocketMessage("", "PSEUDO", "SERVEUR", socketMessageType);
+			SocketMessage message = new SocketMessage(true,"", "PSEUDO", "SERVEUR", socketMessageType);
 			communication.sendMessage(message, streamOut);
 			message = communication.convertStringtoSocketMessage(communication.receiveMessage(streamIn));
 			nickname = message.getMessageContent();
@@ -199,7 +220,7 @@ public class Server implements Runnable {
 			{
 				nicknameAvailable = false;
 				socketMessageType = SocketMessageType.INFO_PSEUDO_EXIST;
-				message = new SocketMessage("", "PSEUDO", "SERVEUR", socketMessageType);
+				message = new SocketMessage(true,"", "PSEUDO", "SERVEUR", socketMessageType);
 				communication.sendMessage(message, streamOut);
 				socket.close();
 			}
@@ -207,7 +228,7 @@ public class Server implements Runnable {
 		if(nickname.toUpperCase().equals("ADMIN"))
 		{
 			socketMessageType = SocketMessageType.INFO_ADMIN;
-			SocketMessage message = new SocketMessage("", "PASSWORD", "SERVEUR", socketMessageType);
+			SocketMessage message = new SocketMessage(true,"", "PASSWORD", "SERVEUR", socketMessageType);
 			communication.sendMessage(message, streamOut);
 			String password = communication.convertStringtoSocketMessage(communication.receiveMessage(streamIn)).getMessageContent();
 			System.out.println("Password " + password);
@@ -218,7 +239,7 @@ public class Server implements Runnable {
 			{
 				nicknameAvailable = false;
 				socketMessageType = SocketMessageType.INFO_ADMIN_ERROR;
-				message = new SocketMessage("", "ADMINERROR", "SERVEUR", socketMessageType);
+				message = new SocketMessage(true,"", "ADMINERROR", "SERVEUR", socketMessageType);
 				communication.sendMessage(message, streamOut);
 				socket.close();
 			}
@@ -226,7 +247,7 @@ public class Server implements Runnable {
 		if(nicknameAvailable)
 		{
 			socketMessageType = SocketMessageType.INFO_SUCCESS;
-			SocketMessage message = new SocketMessage("", "Success", "SERVEUR", socketMessageType);
+			SocketMessage message = new SocketMessage(true,"", "Success", "SERVEUR", socketMessageType);
 			communication.sendMessage(message, streamOut);
 			System.out.println(nickname);
 			hashMap.put("NICKNAME", nickname);

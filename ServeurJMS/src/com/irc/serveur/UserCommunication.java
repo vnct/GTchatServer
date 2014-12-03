@@ -54,14 +54,14 @@ public class UserCommunication {
 	public void updateUserDisconnect(UserCommunication user) throws IOException, JMSException
 	{
 		
-		SocketMessage socketmessage = new SocketMessage(nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_DISCONNECT);
+		SocketMessage socketmessage = new SocketMessage(false,nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_DISCONNECT);
 		String text = socketCommunication.convertSocketMessagetoString(socketmessage);
 		TextMessage message = messageProducer.getSession().createTextMessage(text);
 		messageProducer.sendMessage(message);
 	}
 	public void updateUserConnect(UserCommunication user) throws IOException, JMSException
 	{
-		SocketMessage socketmessage = new SocketMessage(nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_CONNECT);
+		SocketMessage socketmessage = new SocketMessage(false,nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_CONNECT);
 		String text = socketCommunication.convertSocketMessagetoString(socketmessage);
 		TextMessage message = messageProducer.getSession().createTextMessage(text);
 		messageProducer.sendMessage(message);
@@ -75,7 +75,7 @@ public class UserCommunication {
 	{
 		for(UserCommunication user : userlist)
 		{
-			SocketMessage socketmessage = new SocketMessage(nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_NAME);
+			SocketMessage socketmessage = new SocketMessage(false,nickname, user.getNickname(), "SERVEUR",SocketMessageType.USER_NAME);
 			String text = socketCommunication.convertSocketMessagetoString(socketmessage);
 			TextMessage message = messageProducer.getSession().createTextMessage(text);
 			messageProducer.sendMessage(message);
@@ -89,7 +89,7 @@ public class UserCommunication {
 
 	public void sendMsg(String text) throws IOException, JMSException
 	{
-		sendMsg(new SocketMessage(nickname, text, "Serveur", SocketMessageType.MESSAGE_TEXT));
+		sendMsg(new SocketMessage(false,nickname, text, "Serveur", SocketMessageType.MESSAGE_TEXT));
 		
 	}
 	public void sendMsg(SocketMessage socketMessage) throws IOException, JMSException
