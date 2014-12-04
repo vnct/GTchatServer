@@ -123,13 +123,15 @@ public class Server implements Runnable {
 
 	public synchronized  void disconnectSocket(ServerThreadClient serverThreadClient)
 	{
-		//System.out.println(serverThreadClient.getNickname() + " se deconnecte");
+		System.out.println(serverThreadClient.getNickname() + " se deconnecte");
 		Integer indexClient = clients.indexOf(serverThreadClient);
 		try {
+		//	System.out.println("Nb de clients " + clients.size());
 			clients.get(indexClient).checkAccess();
 			sendmessageTopic(SocketMessageType.USER_DISCONNECT,serverThreadClient.getNickname());
 			clients.get(indexClient).closeThread();
 			clients.removeElementAt(indexClient);
+		//	System.out.println("Nb de clients " + clients.size());
 			
 		} catch (Exception ex) {
 			// TODO Auto-generated catch block
@@ -160,8 +162,8 @@ public class Server implements Runnable {
 				
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				disconnectSocket(threadClient);
+			//	e.printStackTrace();
 			}
 		}
 	}
