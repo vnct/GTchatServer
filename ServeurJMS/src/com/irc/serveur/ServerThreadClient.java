@@ -101,7 +101,10 @@ public class ServerThreadClient extends Thread {
 	
 	public void sendMessage(SocketMessage message) throws IOException
 	{
+		System.out.println("sendMessage " + getNickname());
+		System.out.println(message.getMessageContent() + message.getMessageType());
 		socketCommunication.sendMessage(message, streamOut);
+		
 	}
 	
 	public void run()
@@ -112,7 +115,7 @@ public class ServerThreadClient extends Thread {
 			try
 			{  
 				String lecture = streamIn.readUTF();
-				//System.out.println("Lecture du flux --> " + lecture);
+				System.out.println("Lecture du flux --> " + lecture);
 				SocketMessage socketMessage = socketCommunication.convertStringtoSocketMessage(lecture);
 				switch (socketMessage.getMessageType()) {
 				case MESSAGE_TEXT:
@@ -124,6 +127,7 @@ public class ServerThreadClient extends Thread {
 				case USER_KICK:
 					if(getAdmin())
 					{
+						System.out.println("Je kick");
 						server.kick(socketMessage.getMessageContent());
 					}
 					break;

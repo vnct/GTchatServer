@@ -72,11 +72,14 @@ public class Server implements Runnable {
 	         catch(IOException ie)
 	         {  
 	        	 System.out.println("Acceptance Error: " + ie); 
-	       }
+	       } catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	      }
 	}
 	
-	private void addThread(Socket socket) {
+	private void addThread(Socket socket) throws InterruptedException {
 		
 		Integer index = clients.size();
 		HashMap<String, String> hashMap;
@@ -89,6 +92,7 @@ public class Server implements Runnable {
 				clients.get(id).openThread();
 				clientCount++;
 				sendmessageTopic(SocketMessageType.USER_CONNECT,hashMap.get("NICKNAME"));
+				Thread.sleep(1000);
 				sendUpdateList();
 			}
 			
@@ -110,6 +114,7 @@ public class Server implements Runnable {
 		try
 		{
 			Integer indexClient = hashMap.get(name);
+			
 			clients.get(indexClient).sendMessage(new SocketMessage(false,name, "Quit", "", SocketMessageType.MESSAGE_QUIT));
 			sendmessageTopic(SocketMessageType.USER_KICK,name);
 		}
@@ -117,11 +122,9 @@ public class Server implements Runnable {
 		{
 			
 		}
-	
-
 	}
 
-	public synchronized  void disconnectSocket(ServerThreadClient serverThreadClient)
+	public synchronized void disconnectSocket(ServerThreadClient serverThreadClient)
 	{
 		System.out.println(serverThreadClient.getNickname() + " se deconnecte");
 		Integer indexClient = clients.indexOf(serverThreadClient);
@@ -131,6 +134,7 @@ public class Server implements Runnable {
 			sendmessageTopic(SocketMessageType.USER_DISCONNECT,serverThreadClient.getNickname());
 			clients.get(indexClient).closeThread();
 			clients.removeElementAt(indexClient);
+			sendUpdateList();
 		//	System.out.println("Nb de clients " + clients.size());
 			
 		} catch (Exception ex) {
@@ -138,7 +142,6 @@ public class Server implements Runnable {
 			ex.printStackTrace();
 		}
 		System.out.println("Fin disconnectSocket");
-		
 	}
 	public void sendmessageSocket(SocketMessage message)
 	{
@@ -159,10 +162,9 @@ public class Server implements Runnable {
 						System.out.println("Send to specific client");
 					}
 				}
-				
-				
 			} catch (IOException e) {
 				disconnectSocket(threadClient);
+				sendUpdateList();
 			//	e.printStackTrace();
 			}
 		}
@@ -258,6 +260,7 @@ public class Server implements Runnable {
 			System.out.println(nickname);
 			hashMap.put("NICKNAME", nickname);
 			hashMap.put("ADMIN", Boolean.toString(admin));
+			
 			return hashMap;
 		}
 		return null;
