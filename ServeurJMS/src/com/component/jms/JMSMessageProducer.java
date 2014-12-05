@@ -24,6 +24,8 @@ public class JMSMessageProducer extends JMSConnection {
 	{
 		//TextMessage message = session.createTextMessage("TEXT");
 		System.out.println("J'envoie sur " + (topic.toString()));
+		System.out.println("J'envoie sur " + (connectionFactory.getBrokerURL()));
+	
 		this.producer.send(msg);
 	}
 

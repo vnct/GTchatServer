@@ -93,7 +93,7 @@ public class Server implements Runnable {
 				clientCount++;
 				sendmessageTopic(SocketMessageType.USER_CONNECT,hashMap.get("NICKNAME"));
 				Thread.sleep(1000);
-				sendUpdateList();
+				sendUpdateList("");
 			}
 			
 		} catch (IOException e) {
@@ -132,9 +132,10 @@ public class Server implements Runnable {
 		//	System.out.println("Nb de clients " + clients.size());
 			clients.get(indexClient).checkAccess();
 			sendmessageTopic(SocketMessageType.USER_DISCONNECT,serverThreadClient.getNickname());
+			sendUpdateList(serverThreadClient.getNickname());
 			clients.get(indexClient).closeThread();
 			clients.removeElementAt(indexClient);
-			sendUpdateList();
+			//sendUpdateList();
 		//	System.out.println("Nb de clients " + clients.size());
 			
 		} catch (Exception ex) {
@@ -164,12 +165,12 @@ public class Server implements Runnable {
 				}
 			} catch (IOException e) {
 				disconnectSocket(threadClient);
-				sendUpdateList();
+				
 			//	e.printStackTrace();
 			}
 		}
 	}
-	public void sendUpdateList()
+	public synchronized void sendUpdateList(String name_to_delete)
 	{
 		List<String> strings = getNickname();
 		String nicknames ="";
@@ -179,12 +180,15 @@ public class Server implements Runnable {
 			{
 				nicknames = nicknames.concat(";");
 			}
-			nicknames = nicknames.concat(nickname);
+			if(!nickname.equals(name_to_delete))
+			{
+				nicknames = nicknames.concat(nickname);
+			}
 		}
 		sendmessageTopic(SocketMessageType.USER_LIST,nicknames);
 	}
 	
-	public void sendmessageTopic(SocketMessageType type,String text)
+	public synchronized void sendmessageTopic(SocketMessageType type,String text)
 	{
 		SocketMessage socketMessage = new SocketMessage(false,"***", text, "Serveur", type);
 		SocketCommunication socketCommunication = new SocketCommunication();
