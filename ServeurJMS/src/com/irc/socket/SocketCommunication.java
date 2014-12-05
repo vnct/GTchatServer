@@ -36,7 +36,7 @@ public class SocketCommunication {
 		public String convertSocketMessagetoString(SocketMessage message)
 		{
 			String parseur=">";
-			return message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent();
+			return message.getPrivateMsg()+parseur+message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent();
 		}
 		public String getNickName(String message)
 		{
