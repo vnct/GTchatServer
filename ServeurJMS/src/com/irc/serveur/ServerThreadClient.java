@@ -90,7 +90,9 @@ public class ServerThreadClient extends Thread {
 		socket = _socket;
 		nickname = _nickname;
 		index = _index;
+		System.out.println(admin_status);
 		admin = Boolean.valueOf(admin_status);
+		System.out.println(admin);
 		socketCommunication = new SocketCommunication();
 	
 		
@@ -125,6 +127,7 @@ public class ServerThreadClient extends Thread {
 					server.disconnectSocket(this);
 					break;
 				case USER_KICK:
+					System.out.println(getAdmin());
 					if(getAdmin())
 					{
 						System.out.println("Je kick");

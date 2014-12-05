@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import javax.jms.JMSException;
@@ -86,7 +87,7 @@ public class Server implements Runnable {
 		try {
 			hashMap = createConnection(socket);
 			if(hashMap!=null){
-				ServerThreadClient threadClient = new ServerThreadClient(this, socket,index+1,hashMap.get("NICKNAME"));
+				ServerThreadClient threadClient = new ServerThreadClient(this, socket,index+1,hashMap.get("NICKNAME"),hashMap.get("ADMIN"));
 				clients.add(threadClient);
 				Integer id = clients.indexOf(threadClient);
 				clients.get(id).openThread();
@@ -109,18 +110,21 @@ public class Server implements Runnable {
 		String name = socketCommunication.getNickName(text);
 		for(ServerThreadClient serverThreadClient : clients)
 		{
-			hashMap.put(serverThreadClient.getNickname(), serverThreadClient.getIndex());
+			hashMap.put(serverThreadClient.getNickname(),serverThreadClient.getIndex());
 		}
 		try
 		{
+		
+		//	System.out.println(name);
+		//	System.out.println(hashMap.size());
 			Integer indexClient = hashMap.get(name);
-			
-			clients.get(indexClient).sendMessage(new SocketMessage(false,name, "Quit", "", SocketMessageType.MESSAGE_QUIT));
+		//	System.out.println(indexClient);
+			clients.get(indexClient-1).sendMessage(new SocketMessage(false,name, "Quit", "Serveur", SocketMessageType.MESSAGE_QUIT));
 			sendmessageTopic(SocketMessageType.USER_KICK,name);
 		}
 		catch(Exception exception)
 		{
-			
+			exception.printStackTrace();
 		}
 	}
 
@@ -261,7 +265,7 @@ public class Server implements Runnable {
 			socketMessageType = SocketMessageType.INFO_SUCCESS;
 			SocketMessage message = new SocketMessage(true,"", "Success", "SERVEUR", socketMessageType);
 			communication.sendMessage(message, streamOut);
-			System.out.println(nickname);
+			System.out.println(nickname + " --> " + admin);
 			hashMap.put("NICKNAME", nickname);
 			hashMap.put("ADMIN", Boolean.toString(admin));
 			
