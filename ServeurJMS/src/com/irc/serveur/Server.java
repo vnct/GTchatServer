@@ -92,7 +92,7 @@ public class Server implements Runnable {
 				clients.get(id).openThread();
 				clientCount++;
 				sendmessageTopic(SocketMessageType.USER_CONNECT,hashMap.get("NICKNAME"));
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 				sendUpdateList("");
 			}
 			
