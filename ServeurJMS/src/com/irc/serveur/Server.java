@@ -173,7 +173,11 @@ public class Server implements Runnable {
 		String nicknames ="";
 		for(String nickname : strings)
 		{
-			nicknames = nicknames.concat(nickname+";");
+			if(!nicknames.equals(""))
+			{
+				nicknames = nicknames.concat(";");
+			}
+			nicknames = nicknames.concat(nickname);
 		}
 		sendmessageTopic(SocketMessageType.USER_LIST,nicknames);
 	}

@@ -53,4 +53,24 @@ public class SocketCommunication {
 			}
 			return "";
 		}
+		public String[] convertSocketMessagetoStringTab(
+				SocketMessage socketMessage) {
+			// TODO Auto-generated method stub
+		
+			return new String[]{socketMessage.getPrivateMsg().toString(),socketMessage.getMessageType().toString(),socketMessage.getNicknameDestinataire(),socketMessage.getNicknameExpediteur(),socketMessage.getMessageContent()};
+		}
+		public SocketMessage convertStringTabtoSocketMessage(String[] strings)
+		{
+			try
+			{
+				SocketMessage message = new SocketMessage(Boolean.valueOf(strings[0]),strings[2], strings[4], strings[3],SocketMessageType.valueOf(strings[1])) ;
+				return message;
+			}
+			catch(Exception exception)
+			{
+				exception.printStackTrace();
+			}
+			return new SocketMessage(false,"", "", "", SocketMessageType.MESSAGE_ERROR);
+		
+		}
 }
