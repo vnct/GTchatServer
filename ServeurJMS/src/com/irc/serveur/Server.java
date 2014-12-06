@@ -67,7 +67,8 @@ public class Server implements Runnable {
 	public void run() {
 		while (thread != null)
 	      {  try
-	         {  System.out.println("Waiting for a client ..."); 
+	         {  System.out.println("Server successfully started ..."); 
+	    	  	System.out.println("Waiting for a client ..."); 
 	            addThread(server.accept());
 	         }
 	         catch(IOException ie)
