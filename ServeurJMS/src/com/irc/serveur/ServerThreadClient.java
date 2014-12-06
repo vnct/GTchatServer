@@ -179,6 +179,7 @@ public class ServerThreadClient extends Thread {
 	public void closeThread() throws IOException, InterruptedException
 	{  
 		this.interrupt();
+		
 		closeSocket();
 		
 	}
