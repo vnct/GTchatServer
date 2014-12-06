@@ -130,7 +130,6 @@ public class ServerThreadClient extends Thread {
 					System.out.println(getAdmin());
 					if(getAdmin())
 					{
-						System.out.println("Je kick");
 						server.kick(socketMessage.getMessageContent());
 					}
 					break;
