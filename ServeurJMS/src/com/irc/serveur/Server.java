@@ -1,5 +1,6 @@
 package com.irc.serveur;
 
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -54,6 +55,7 @@ public class Server implements Runnable {
 			Server server = null;
 			int port = Integer.parseInt(args[1]);
 			server = new Server(port,args[0]);
+			 System.out.println("Server successfully started ..."); 
 		}
 		catch(Exception exception)
 		{
@@ -67,7 +69,7 @@ public class Server implements Runnable {
 	public void run() {
 		while (thread != null)
 	      {  try
-	         {  System.out.println("Server successfully started ..."); 
+	         { 
 	    	  	System.out.println("Waiting for a client ..."); 
 	            addThread(server.accept());
 	         }
@@ -115,18 +117,23 @@ public class Server implements Runnable {
 		HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
 		SocketCommunication socketCommunication = new SocketCommunication();
 		String name = socketCommunication.getNickName(text);
-		for(ServerThreadClient serverThreadClient : clients)
+		for(int i=0;i<clients.size();i++)
 		{
-			hashMap.put(serverThreadClient.getNickname(),serverThreadClient.getIndex());
+			hashMap.put(clients.get(i).getNickname(),i);
 		}
+
 		try
 		{
 		
-		//	System.out.println(name);
-		//	System.out.println(hashMap.size());
+			for(Entry<String, Integer> entry : hashMap.entrySet()) {
+      	
+      		 System.out.println( entry.getKey() +  " - " + entry.getValue());
+      				 
+      	
+      		    // traitements
+      		}
 			Integer indexClient = hashMap.get(name);
-		//	System.out.println(indexClient);
-			clients.get(indexClient-1).sendMessage(new SocketMessage(false,name, "Quit", "Serveur", SocketMessageType.MESSAGE_QUIT));
+			clients.get(indexClient).sendMessage(new SocketMessage(false,name, "Quit", "Serveur", SocketMessageType.MESSAGE_QUIT));
 			sendmessageTopic(SocketMessageType.USER_KICK,name);
 		}
 		catch(Exception exception)
@@ -144,15 +151,20 @@ public class Server implements Runnable {
 			clients.get(indexClient).checkAccess();
 			sendmessageTopic(SocketMessageType.USER_DISCONNECT,serverThreadClient.getNickname());
 			sendUpdateList(serverThreadClient.getNickname());
+			ServerThreadClient serverThread = clients.get(indexClient);
 			clients.get(indexClient).closeThread();
-			clients.removeElementAt(indexClient);
+		//	clients.get(indexClient).stop();
 			//sendUpdateList();
 		//	System.out.println("Nb de clients " + clients.size());
 			
 		} catch (Exception ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
+		}finally
+		{
+			clients.removeElementAt(indexClient);
 		}
+	
 		System.out.println("Fin disconnectSocket");
 	}
 	public void sendmessageSocket(SocketMessage message)

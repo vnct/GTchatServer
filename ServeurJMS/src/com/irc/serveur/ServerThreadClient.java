@@ -181,7 +181,9 @@ public class ServerThreadClient extends Thread {
 		this.interrupt();
 		
 		closeSocket();
-		this.stop();
+		
+		
+		//this.stop();s
 	}
 
 	public DataOutputStream getStreamOut() {
